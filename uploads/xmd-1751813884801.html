@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id" class="bg-gray-900">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+
+  <div class="backdrop-blur-md bg-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-xl flex flex-col h-[80vh]">
+    <div id="chat" class="flex-1 overflow-y-auto space-y-4 mb-4"></div>
+    <form id="chat-form" class="flex">
+      <input id="message" type="text" placeholder="Tulis pesan..." class="flex-1 p-3 rounded-l-xl bg-white/20 text-white focus:outline-none backdrop-blur-sm" />
+      <button class="px-6 py-3 bg-indigo-500 text-white rounded-r-xl hover:bg-indigo-600 transition-all">Kirim</button>
+    </form>
+  </div>
+
+  <script>
+    let sessionId = null;
+
+    async function initSession() {
+      const res = await fetch('/session', { method: 'POST' });
+      const data = await res.json();
+      sessionId = data.sessionId;
+    }
+
+    async function sendMessage(message) {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ sessionId, message })
+      });
+      const data = await res.json();
+      return data.reply;
+    }
+
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message');
+    const chat = document.getElementById('chat');
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = messageInput.value.trim();
+      if (!msg) return;
+
+      addMessage('user', msg);
+      messageInput.value = '';
+
+      const reply = await sendMessage(msg);
+      addMessage('ai', reply);
+    });
+
+    function addMessage(sender, text) {
+      const bubble = document.createElement('div');
+      bubble.className = `p-4 rounded-xl max-w-[70%] ${sender === 'user' ? 'bg-indigo-500 text-white self-end animate-slideInRight' : 'bg-white/20 text-white self-start animate-slideInLeft'}`
+      bubble.innerText = text;
+      chat.appendChild(bubble);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    initSession();
+  </script>
+
+  <style>
+    @keyframes slideInRight {
+      from { transform: translateX(50%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideInLeft {
+      from { transform: translateX(-50%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .animate-slideInRight {
+      animation: slideInRight 0.3s ease-out;
+    }
+    .animate-slideInLeft {
+      animation: slideInLeft 0.3s ease-out;
+    }
+  </style>
+
+</body>
+</html>
