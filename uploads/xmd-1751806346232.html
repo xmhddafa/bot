@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 min-h-screen">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uploader with Progress, History & Bio Links</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-screen text-white">
+
+  <!-- Header -->
+  <header class="bg-white/20 backdrop-blur-md p-4 flex justify-between items-center shadow-md relative z-50">
+    <h1 class="text-xl font-bold text-white">CloudUploader</h1>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-1 flex flex-col items-center justify-start px-4 py-10 relative z-10">
+    <div class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-8 shadow-lg border border-white/20">
+
+      <!-- Dropzone -->
+      <div id="dropZone" class="flex flex-col items-center justify-center border-2 border-dashed border-white/40 rounded-lg p-12 text-center cursor-pointer hover:bg-white/5 transition relative">
+        <svg class="w-12 h-12 mb-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M4 12l8-8 8 8M12 4v12"/>
+        </svg>
+        <p class="text-white/80">Drag & Drop file here or click to browse</p>
+        <input id="fileInput" type="file" class="hidden">
+      </div>
+
+      <!-- Progress Bar -->
+      <div id="progressContainer" class="hidden mt-6">
+        <div class="w-full bg-white/20 rounded-full h-4 overflow-hidden">
+          <div id="progressBar" class="bg-white h-full transition-all duration-300 ease-linear" style="width: 0%;"></div>
+        </div>
+        <div id="progressText" class="mt-2 text-sm text-center">0%</div>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <label class="block text-sm mb-2">Uploaded File URL</label>
+        <div class="flex mb-2">
+          <input id="uploadUrl" readonly class="flex-1 px-4 py-2 rounded-l-md bg-white/20 backdrop-blur-md text-white placeholder-white/50">
+          <button id="copyBtn" class="px-4 bg-white/30 backdrop-blur-md hover:bg-white/40 transition text-white rounded-r-md">Copy</button>
+        </div>
+        <ul id="historyList" class="space-y-1 text-sm text-white/90"></ul>
+      </div>
+
+      <!-- Bio Links -->
+      <div class="mt-8 flex flex-wrap gap-4 justify-center">
+        <a href="https://github.com/yourgithub" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full hover:bg-white/30 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.1 3.29 9.4 7.86 10.94.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.77 2.74 1.26 3.4.96.1-.75.41-1.26.75-1.55-2.55-.29-5.23-1.28-5.23-5.72 0-1.26.45-2.3 1.2-3.11-.12-.3-.52-1.53.11-3.19 0 0 .97-.31 3.18 1.2a11.1 11.1 0 015.79 0c2.2-1.51 3.18-1.2 3.18-1.2.63 1.66.23 2.89.11 3.19.75.81 1.2 1.85 1.2 3.11 0 4.45-2.69 5.43-5.25 5.71.42.36.8 1.07.8 2.16 0 1.56-.01 2.82-.01 3.2 0 .31.2.68.8.56A10.5 10.5 0 0023.5 12C23.5 5.73 18.27.5 12 .5z"/>
+          </svg>
+          GitHub
+        </a>
+
+        <a href="https://wa.me/yourwhatsapplink" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full hover:bg-white/30 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163a11.93 11.93 0 01-1.587-5.95C.157 5.355 5.48 0 12.075 0 18.668 0 24 5.355 24 11.887 24 18.418 18.668 24 12.075 24c-2.025 0-3.947-.524-5.675-1.522L.057 24zM6.68 20.13c1.676.995 3.56 1.515 5.396 1.515 5.51 0 9.98-4.467 9.98-9.962C22.057 6.2 17.587 1.73 12.076 1.73c-5.51 0-9.979 4.47-9.979 9.953 0 2.11.664 4.1 1.9 5.76l-.998 3.638 3.681-.95zm11.387-5.446c-.155-.255-.566-.406-1.184-.71-.619-.305-3.666-1.812-4.237-2.017-.57-.204-.985-.305-1.4.305-.414.61-1.6 1.99-1.962 2.4-.363.41-.725.46-1.344.155-.62-.305-2.622-1.04-4.99-3.315-1.843-1.82-3.085-4.058-3.447-4.668-.363-.61-.04-1.02.274-1.324.283-.282.62-.71.93-1.066.31-.355.414-.61.62-.965.207-.355.104-.71-.051-1.015-.155-.304-1.4-3.355-1.919-4.627-.506-1.27-1.02-1.1-1.4-1.1H1.86c-.38 0-.775.04-1.12.65C.31 1.58.26 2.61.413 3.007c.154.405 1.6 4.435 1.9 5.04.31.61.62 1.22.93 1.63.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23.31.41.62.82.93 1.23z"/>
+          </svg>
+          WhatsApp
+        </a>
+
+        <a href="https://instagram.com/yourinstagram" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full hover:bg-white/30 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.056 1.963.24 2.42.4.58.19 1 .42 1.44.86.44.44.67.86.86 1.44.16.46.34 1.25.4 2.42.058 1.26.07 1.65.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.24 1.963-.4 2.42-.19.58-.42 1-.86 1.44-.44.44-.86.67-1.44.86-.46.16-1.25.34-2.42.4-1.26.058-1.65.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.963-.24-2.42-.4-.58-.19-1-.42-1.44-.86-.44-.44-.67-.86-.86-1.44-.16-.46-.34-1.25-.4-2.42C2.212 15.784 2.2 15.39 2.2 12s.012-3.584.07-4.85c.056-1.17.24-1.963.4-2.42.19-.58.42-1 .86-1.44.44-.44.86-.67 1.44-.86.46-.16 1.25-.34 2.42-.4C8.416 2.212 8.81 2.2 12 2.2zm0-2.2C8.736 0 8.332.013 7.052.072 5.765.13 4.732.34 3.89.668 3.02 1.01 2.29 1.53 1.53 2.29.77 3.05.25 3.78-.09 4.65c-.33.84-.54 1.88-.6 3.16C-.013 8.332 0 8.736 0 12c0 3.264.013 3.668.072 4.948.058 1.288.27 2.32.6 3.16.34.87.86 1.6 1.62 2.36.76.76 1.49 1.28 2.36 1.62.84.33 1.87.54 3.16.6 1.28.058 1.684.072 4.948.072s3.668-.013 4.948-.072c1.288-.058 2.32-.27 3.16-.6.87-.34 1.6-.86 2.36-1.62.76-.76 1.28-1.49 1.62-2.36.33-.84.54-1.87.6-3.16.058-1.28.072-1.684.072-4.948s-.013-3.668-.072-4.948c-.058-1.288-.27-2.32-.6-3.16-.34-.87-.86-1.6-1.62-2.36C21.7.77 20.97.25 20.1-.09c-.84-.33-1.87-.54-3.16-.6C15.668-.013 15.264 0 12 0zm0 5.838A6.162 6.162 0 005.838 12 6.162 6.162 0 0012 18.162 6.162 6.162 0 0018.162 12 6.162 6.162 0 0012 5.838zm0 10.162A4 4 0 118 12a4 4 0 014 4zm6.406-10.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
+          </svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center text-white/80 py-4 text-sm relative z-10">
+    &copy; 2025 CloudUploader • Inspired by catbox, uguu, tmpfiles
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const result = document.getElementById('result');
+    const uploadUrl = document.getElementById('uploadUrl');
+    const copyBtn = document.getElementById('copyBtn');
+    const historyList = document.getElementById('historyList');
+
+    let history = JSON.parse(localStorage.getItem('uploadHistory')) || [];
+    renderHistory();
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('border-white', 'bg-white/10');
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-white', 'bg-white/10');
+    });
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('border-white', 'bg-white/10');
+      const file = e.dataTransfer.files[0];
+      if (file) uploadFile(file);
+    });
+    fileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) uploadFile(file);
+    });
+
+    async function uploadFile(file) {
+      result.classList.add('hidden');
+      progressContainer.classList.remove('hidden');
+      progressBar.style.width = '0%';
+      progressText.textContent = '0%';
+
+      // Faster fake progress
+      let fakeProgress = 0;
+      const interval = setInterval(() => {
+        if (fakeProgress < 98) {
+          fakeProgress += Math.random() * 10; 
+          if (fakeProgress > 98) fakeProgress = 98;
+          progressBar.style.width = fakeProgress + '%';
+          progressText.textContent = Math.round(fakeProgress) + '%';
+        }
+      }, 50);
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64File = reader.result.split(',')[1];
+        try {
+          const res = await fetch('https://cdn-bos.vercel.app/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: base64File })
+          });
+          const data = await res.json();
+
+          clearInterval(interval);
+          progressBar.style.width = '100%';
+          progressText.textContent = '100%';
+
+          if (res.ok) {
+            uploadUrl.value = data.url;
+            result.classList.remove('hidden');
+            copyBtn.onclick = () => {
+              navigator.clipboard.writeText(data.url);
+              alert('URL copied!');
+            };
+            history.unshift(data.url);
+            if (history.length > 10) history.pop();
+            localStorage.setItem('uploadHistory', JSON.stringify(history));
+            renderHistory();
+          } else {
+            alert('Upload failed: ' + data.error);
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+        } finally {
+          setTimeout(() => {
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+          }, 500);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderHistory() {
+      historyList.innerHTML = '';
+      history.forEach(url => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${url}" target="_blank" class="underline hover:text-white">${url}</a>`;
+        historyList.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
