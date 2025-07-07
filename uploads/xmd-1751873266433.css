@@ -1,0 +1,862 @@
+/* ========================================= */
+/* === 0. Global Reset & Base Styles === */
+/* ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Google Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background: var(--gemini-bg-primary);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--gemini-text-primary);
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+/* ========================================= */
+/* === 1. Theme Variables (Gemini Palette) === */
+/* ========================================= */
+:root {
+    /* Gemini Dark Theme */
+    --gemini-bg-primary: #0A0A0C;
+    --gemini-bg-secondary: #121214;
+    --gemini-bg-tertiary: #1F1F21;
+    --gemini-text-primary: #E0E0E0;
+    --gemini-text-secondary: #A0A0A0;
+    --gemini-icon-color: #9AA0A6;
+    --gemini-input-bg: #1A1A1C;
+    --gemini-send-btn-bg: #1A73E8;
+    --gemini-send-btn-disabled-bg: #404040;
+    --gemini-send-btn-hover-bg: #155BB5;
+    --gemini-user-bubble-bg: #28282A;
+    --gemini-ai-bubble-bg: transparent;
+    --gemini-code-bg: #1A1A1C;
+    --gemini-border-color: rgba(255, 255, 255, 0.08);
+    --gemini-placeholder-color: #6C7074;
+    --gemini-red-color: #F28B82;
+    --gemini-hover-overlay: rgba(255, 255, 255, 0.08);
+    --sidebar-width: 280px;
+    --overlay-color: rgba(0, 0, 0, 0.6);
+    --chat-input-container-bg: #1C1C1D;
+}
+
+.light-mode {
+    /* Gemini Light Theme */
+    --gemini-bg-primary: #FFFFFF;
+    --gemini-bg-secondary: #F8F9FA;
+    --gemini-bg-tertiary: #E8EAED;
+    --gemini-text-primary: #202124;
+    --gemini-text-secondary: #5F6368;
+    --gemini-icon-color: #5F6368;
+    --gemini-input-bg: #F1F3F4;
+    --gemini-send-btn-bg: #1A73E8;
+    --gemini-send-btn-disabled-bg: #E0E0E0;
+    --gemini-send-btn-hover-bg: #155BB5;
+    --gemini-user-bubble-bg: #EAF1FB;
+    --gemini-ai-bubble-bg: transparent;
+    --gemini-code-bg: #E8EAED;
+    --gemini-border-color: #DADCE0;
+    --gemini-placeholder-color: #80868B;
+    --gemini-red-color: #D32F2F;
+    --gemini-hover-overlay: rgba(0, 0, 0, 0.05);
+    --overlay-color: rgba(0, 0, 0, 0.4);
+    --chat-input-container-bg: #EAEAEA;
+}
+
+/* ========================================= */
+/* === 2. Scrollbar Styling (Minimalist) === */
+/* ========================================= */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gemini-bg-secondary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gemini-icon-color);
+    border-radius: 10px;
+    border: 2px solid var(--gemini-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gemini-text-secondary);
+}
+
+/* ========================================= */
+/* === 3. App Layout Container === */
+/* ========================================= */
+.app-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ========================================= */
+/* === 4. Sidebar === */
+/* ========================================= */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--gemini-bg-secondary);
+    color: var(--gemini-text-primary);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-out;
+    z-index: 1005;
+    overflow-y: auto;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.sidebar-header .material-symbols-rounded {
+    font-size: 28px;
+    color: var(--gemini-icon-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.sidebar-header .material-symbols-rounded:hover {
+    background-color: var(--gemini-hover-overlay);
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: var(--gemini-text-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar-item:hover {
+    background-color: var(--gemini-hover-overlay);
+}
+
+.sidebar-item .material-symbols-rounded {
+    font-size: 24px;
+    color: var(--gemini-icon-color);
+    transition: color 0.2s ease;
+}
+
+.sidebar-item.delete-option {
+    color: var(--gemini-red-color);
+}
+
+.sidebar-item.delete-option .material-symbols-rounded {
+    color: var(--gemini-red-color);
+}
+
+.sidebar-item-label {
+    flex: 1;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-color);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ========================================= */
+/* === 5. Main Content Area === */
+/* ========================================= */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ========================================= */
+/* === 6. Header (Top Bar) === */
+/* ========================================= */
+.top-bar {
+    background-color: var(--gemini-bg-primary);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--gemini-border-color);
+    flex-shrink: 0;
+}
+
+.top-bar .left-icons {
+    display: flex;
+    align-items: center;
+}
+
+.top-bar .material-symbols-rounded {
+    font-size: 28px;
+    margin-right: 8px;
+    cursor: pointer;
+    color: var(--gemini-icon-color);
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.top-bar .material-symbols-rounded:hover {
+    background-color: var(--gemini-hover-overlay);
+}
+
+.top-bar .chat-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--gemini-text-primary);
+    margin-left: 8px;
+}
+
+.top-bar .profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.top-bar .profile-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* ========================================= */
+/* === 7. Chat Container === */
+/* ========================================= */
+.chat-container {
+    flex: 1;
+    padding: 20px 16px 100px;
+    background-color: var(--gemini-bg-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+/* ========================================= */
+/* === 8. Welcome Message === */
+/* ========================================= */
+.welcome-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--gemini-text-secondary);
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.3s ease-out, height 0.3s ease-out, padding 0.3s ease-out, margin 0.3s ease-out;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.welcome-message.hidden {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* ========================================= */
+/* === 9. Chat Bubbles === */
+/* ========================================= */
+.chat {
+    display: flex;
+    align-items: flex-start;
+    max-width: 90%;
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInSlideUp 0.3s ease-out forwards;
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat.incoming {
+    background-color: var(--gemini-ai-bubble-bg);
+    color: var(--gemini-text-primary);
+    align-self: flex-start;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.chat.incoming .chat-content-wrapper {
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+
+.chat.outgoing {
+    background-color: var(--gemini-user-bubble-bg);
+    color: var(--gemini-text-primary);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 90%;
+}
+
+.chat-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.chat.outgoing .chat-content-wrapper {
+    width: auto;
+}
+
+.chat-text {
+    word-wrap: break-word;
+    white-space: pre-wrap; /* MENGGUNAKAN PRE-WRAP UNTUK BARIS BARU */
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+/* --- Text Formatting --- */
+.chat-text strong,
+.chat-text b {
+    font-weight: bold;
+}
+
+.chat-text em,
+.chat-text i {
+    font-style: italic;
+}
+
+.chat-text u {
+    text-decoration: underline;
+}
+
+.chat-text code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+    color: #E0E0E0;
+}
+
+.light-mode .chat-text code {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #202124;
+}
+
+/* ========================================= */
+/* === 10. Typing Animation (for AI) === */
+/* ========================================= */
+.typing-animation {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    padding: 12px 16px;
+    border-radius: 18px;
+    background-color: var(--gemini-user-bubble-bg);
+    width: fit-content;
+    align-self: flex-start;
+}
+
+.typing-animation .typing-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--gemini-icon-color);
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.typing-animation .typing-dot:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.typing-animation .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-animation .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.4;
+    }
+}
+
+/* ========================================= */
+/* === 11. Chat Action Icons === */
+/* ========================================= */
+.chat-action-icons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    justify-content: flex-start;
+}
+
+.chat.outgoing .chat-action-icons {
+    justify-content: flex-end;
+}
+
+.chat-action-icons .material-symbols-rounded {
+    font-size: 20px;
+    color: var(--gemini-icon-color);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.chat-action-icons .material-symbols-rounded:hover {
+    color: var(--gemini-text-primary);
+    transform: scale(1.1);
+}
+
+/* ========================================= */
+/* === 12. Input Area (Typing Container) === */
+/* ========================================= */
+.typing-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--gemini-bg-primary);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+    border-top: 1px solid var(--gemini-border-color);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-area-wrapper {
+    width: 100%;
+    max-width: 768px;
+    display: flex;
+    align-items: center;
+    background-color: var(--chat-input-container-bg);
+    border-radius: 28px;
+    padding: 8px 16px;
+    box-shadow: none;
+    position: relative;
+    min-height: 56px;
+    border: none;
+    transition: none;
+}
+
+.input-area-wrapper:focus-within {
+    border-color: transparent;
+}
+
+.input-area-wrapper .material-symbols-outlined,
+.input-area-wrapper .material-symbols-rounded {
+    font-size: 24px;
+    color: var(--gemini-icon-color);
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+
+.input-area-wrapper .material-symbols-outlined:hover,
+.input-area-wrapper .material-symbols-rounded:hover {
+    background-color: var(--gemini-hover-overlay);
+    color: var(--gemini-text-primary);
+}
+
+.input-area-wrapper .attachment-icon {
+    margin-right: 4px;
+}
+
+.input-area-wrapper .tune-icon {
+    margin-right: 8px;
+}
+
+textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--gemini-text-primary);
+    resize: none;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 24px;
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: 24px;
+    min-height: 24px;
+    margin: 0 8px;
+    vertical-align: middle;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+textarea::-webkit-scrollbar {
+    display: none;
+}
+
+textarea::placeholder {
+    color: var(--gemini-placeholder-color);
+    opacity: 1;
+}
+
+.input-trailing-icons {
+    display: flex;
+    align-items: center;
+}
+
+/* PERBAIKAN CSS UNTUK TOMBOL KIRIM */
+.send-button,
+.mic-icon,
+.waveform-icon {
+    width: 44px;
+    height: 44px;
+    background-color: transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background-color 0.2s, opacity 0.2s;
+    flex-shrink: 0;
+    color: var(--gemini-icon-color);
+}
+
+.send-button {
+    background-color: var(--gemini-send-btn-bg);
+    /* Pastikan display flex secara default untuk tombol send saat aktif */
+    display: flex;
+}
+
+.send-button .material-symbols-rounded {
+    color: white;
+}
+
+.send-button.disabled {
+    background-color: var(--gemini-send-btn-disabled-bg);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.send-button:not(.disabled):hover {
+    background-color: var(--gemini-send-btn-hover-bg);
+}
+
+/* Kontrol visibilitas */
+.mic-icon,
+.waveform-icon {
+    display: flex; /* Default tampil */
+}
+
+.send-button {
+    display: none; /* Default sembunyi */
+}
+
+.input-area-wrapper.has-text .mic-icon,
+.input-area-wrapper.has-text .waveform-icon {
+    display: none; /* Sembunyikan mic/waveform jika ada teks */
+}
+
+.input-area-wrapper.has-text .send-button {
+    display: flex; /* Tampilkan tombol send jika ada teks */
+}
+
+
+/* ========================================= */
+/* === 13. Code Block Styling === */
+/* ========================================= */
+.chat .code-block-container {
+    background-color: var(--gemini-code-bg);
+    border-radius: 8px;
+    margin-top: 10px;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.light-mode .chat .code-block-container {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.code-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: rgba(0, 0, 0, 0.15);
+    color: var(--gemini-text-secondary);
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.light-mode .code-block-header {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.code-block-lang {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.code-block-copy-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 15px;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.light-mode .code-block-copy-btn {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--gemini-text-primary);
+}
+
+.code-block-copy-btn:hover {
+    background-color: var(--gemini-send-btn-hover-bg);
+    color: white;
+}
+
+.light-mode .code-block-copy-btn:hover {
+    background-color: var(--gemini-send-btn-hover-bg);
+    color: white;
+}
+
+.code-block-copy-btn .material-symbols-rounded {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+}
+
+.code-block pre {
+    padding: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.code-block code {
+    display: block;
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+/* Error message style */
+.chat-text.error {
+    color: var(--gemini-red-color);
+    font-weight: 500;
+}
+
+/* ========================================= */
+/* === 14. Mobile Responsiveness === */
+/* ========================================= */
+@media screen and (max-width: 768px) {
+    .top-bar {
+        padding: 10px 12px;
+    }
+
+    .top-bar .material-symbols-rounded {
+        font-size: 26px;
+        padding: 6px;
+    }
+
+    .top-bar .profile-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .chat-container {
+        padding: 15px 12px 90px;
+    }
+
+    .chat {
+        max-width: 100%;
+    }
+
+    .chat.outgoing {
+        padding: 10px 12px;
+    }
+
+    .chat-action-icons {
+        margin-top: 8px;
+        gap: 6px;
+    }
+
+    .typing-container {
+        padding: 8px 12px;
+    }
+
+    .input-area-wrapper {
+        padding: 6px 12px;
+        min-height: 52px;
+    }
+
+    textarea {
+        padding: 0;
+        font-size: 0.95rem;
+        line-height: 22px;
+        height: 22px;
+        min-height: 22px;
+    }
+
+    .input-area-wrapper .material-symbols-outlined,
+    .input-area-wrapper .material-symbols-rounded {
+        font-size: 20px;
+        padding: 8px;
+    }
+
+    .send-button,
+    .mic-icon,
+    .waveform-icon {
+        width: 40px;
+        height: 40px;
+        margin-left: 6px;
+    }
+
+    .send-button .material-symbols-rounded {
+        font-size: 20px;
+    }
+
+    .sidebar {
+        width: 250px;
+    }
+
+    .chat .code-block-container {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .code-block-copy-btn {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
+
+    .code-block-copy-btn .material-symbols-rounded {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    body {
+        font-size: 15px;
+    }
+
+    .welcome-message h2 {
+        font-size: 2.2rem;
+    }
+
+    .welcome-message p {
+        font-size: 1rem;
+    }
+
+    .input-area-wrapper {
+        padding: 5px 10px;
+    }
+
+    textarea {
+        font-size: 0.9rem;
+        line-height: 20px;
+        height: 20px;
+        min-height: 20px;
+    }
+}
+
+/* ========================================= */
+/* === 15. Desktop Specific Adjustments === */
+/* ========================================= */
+@media screen and (min-width: 769px) {
+    .main-content.sidebar-open {
+        margin-left: var(--sidebar-width);
+    }
+}
