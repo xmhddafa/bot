@@ -168,16 +168,24 @@ const getChatResponse = async (incomingChatElement) => {
         console.log("Raw API Response Data:", data);
 
         // Ekstraksi respons AI yang lebih cerdas
-        if (data && typeof data.data === 'string' && data.data.trim() !== '') {
-            rawApiResponse = data.data;
-        } else if (data && typeof data.data === 'object' && data.data !== null) {
-            rawApiResponse = data.data.response || data.data.message || data.data.text || JSON.stringify(data.data);
-        } else if (data && (typeof data.response === 'string' || typeof data.message === 'string' || typeof data.text === 'string')) {
-            rawApiResponse = data.response || data.message || data.text;
-        } else {
-            console.warn("No valid text response found in API data. Full data:", data);
-            rawApiResponse = `[API Error: No valid text response found. Raw data: ${JSON.stringify(data)}]`;
-        }
+        // Fix bagian ini SAJA:
+if (data && typeof data.data === 'string' && data.data.trim() !== '') {
+  rawApiResponse = data.data;
+} else if (data && typeof data.data === 'object' && data.data !== null) {
+  rawApiResponse = data.data.response || data.data.message || data.data.text;
+
+  // FIX: Jika masih tidak ketemu, jadikan string fallback
+  if (!rawApiResponse) {
+    console.warn("API returned object without text, fallback applied:", data.data);
+    rawApiResponse = '[API Warning: Unexpected object format]';
+  }
+
+} else if (data && (typeof data.response === 'string' || typeof data.message === 'string' || typeof data.text === 'string')) {
+  rawApiResponse = data.response || data.message || data.text;
+} else {
+  console.warn("No valid text response found in API data. Full data:", data);
+  rawApiResponse = `[API Error: No valid text response found.]`;
+}
 
         // Pastikan rawApiResponse adalah string
         rawApiResponse = String(rawApiResponse);
