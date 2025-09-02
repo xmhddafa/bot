@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+  xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+  <channel>
+    <title>🚀 XShort</title>
+    <atom:link href="https://xshort.zone.id/" rel="self" type="application/rss+xml" />
+    <link>https://xshort.zone.id</link>
+    <description>✨ Solusi shortlink modern – cepat, simpel, dan powerful. Temukan cara baru membagikan link hanya di https://xshort.zone.id</description>
+    <lastBuildDate>Tue, 02 Sep 2025 15:00:00 +0000</lastBuildDate>
+    <language>id</language>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    <sy:updateFrequency>1</sy:updateFrequency>
+    <generator>XShort Feed Generator</generator>
+
+    <image>
+      <url>https://cdn.xmhddafa.xyz/xmd-1756819086133.jpg</url>
+      <title>🚀 XShort</title>
+      <link>https://xshort.zone.id</link>
+      <width>512</width>
+      <height>512</height>
+    </image>
+
+    <item>
+      <title>🎉 Grand Launching: XShort Hadir untuk Kamu!</title>
+      <link>https://xshort.zone.id/</link>
+      <dc:creator><![CDATA[@xfaa]]></dc:creator>
+      <pubDate>Tue, 02 Sep 2025 15:00:00 +0000</pubDate>
+      <category><![CDATA[🔥 Announcement]]></category>
+      <guid isPermaLink="false">https://xshort.zone.id/?p=1</guid>
+      <description><![CDATA[
+        <p>Selamat datang di era baru berbagi link! 🚀</p>
+        <p><strong>XShort</strong> adalah layanan shortlink cerdas dengan tampilan modern, kecepatan maksimal, dan pengalaman yang simpel.</p>
+        <ul>
+          <li>⚡ Super cepat & ringan</li>
+          <li>🎨 Desain modern & clean</li>
+          <li>📊 Analitik real-time untuk tracking link kamu</li>
+        </ul>
+        <p>Yuk coba sekarang 👉 <a href="https://xshort.zone.id">xshort.zone.id</a></p>
+        <p><img src="https://cdn.xmhddafa.xyz/xmd-1756819086133.jpg" alt="XShort Launching" width="512" height="512" /></p>
+      ]]></description>
+    </item>
+    
+  </channel>
+</rss>
