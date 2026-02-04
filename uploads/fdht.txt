@@ -1,0 +1,59 @@
+#include <SPI.h>       
+#include <DMD.h>    
+#include <TimerOne.h>  
+#include "SystemFont5x7.h"
+
+#define DISPLAYS_ACROSS 1 
+#define DISPLAYS_DOWN 1
+DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
+
+void ScanDMD() { 
+  dmd.scanDisplayBySPI();
+}
+
+// Fungsi bantu agar tidak menulis kode berulang-ulang
+void tampilkanLirik(char *teksAtas, char *teksBawah, int durasi) {
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+  
+  // Baris Atas (Statis)
+  dmd.drawString(0, 0, teksAtas, strlen(teksAtas), GRAPHICS_NORMAL);
+  
+  // Baris Bawah (Running Text)
+  dmd.drawMarquee(teksBawah, strlen(teksBawah), 31, 9);
+  
+  long start = millis();
+  while (millis() - start < durasi) {
+    static long timer = 0;
+    if ((millis() - timer) > 40) { // Kecepatan jalan teks
+      dmd.stepMarquee(-1, 0); 
+      timer = millis();
+    }
+  }
+}
+
+void setup(void) {
+  Timer1.initialize(1000);          
+  Timer1.attachInterrupt(ScanDMD);   
+  dmd.clearScreen(true);   
+}
+
+void loop(void) {
+  // Format: tampilkanLirik("Teks Atas", "Teks Bawah/Running", Durasi_dalam_ms)
+  
+  tampilkanLirik("TEMANKU", "Semua pada jahat tante...", 3500);
+  
+  tampilkanLirik("SUSAH", "Aku lagi susah mereka gak ada...", 3500);
+  
+  tampilkanLirik("JAYA", "Coba kalo lagi jaya...", 3000);
+  
+  tampilkanLirik("TANTE", "Aku dipuja pujanya tante...", 4000);
+  
+  tampilkanLirik("TERBIASA", "Sudah terbiasa terjadi tante...", 3500);
+  
+  tampilkanLirik("DATANG", "Teman datang ketika butuh saja...", 3500);
+  
+  tampilkanLirik("SUSAH", "Coba kalo lagi susah...", 3000);
+  
+  tampilkanLirik("PERGI", "Mereka semua menghilang...", 4500);
+}
