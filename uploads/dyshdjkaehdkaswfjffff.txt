@@ -1,0 +1,47 @@
+#include <SPI.h>
+#include <DMD.h>
+#include <TimerOne.h>
+#include "SystemFont5x7.h"
+
+#define DISPLAYS_ACROSS 1   // jumlah panel P10 horizontal
+#define DISPLAYS_DOWN 1    // jumlah panel P10 vertikal
+
+DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
+
+void ScanDMD() {
+  dmd.scanDisplayBySPI();
+}
+
+// LIRIK LAGU (running text)
+char teks[] =
+"Temanku semua pada jahat tante "
+"Aku lagi susah mereka gak ada "
+"Coba kalo lagi jaya "
+"Aku dipuja pujanya tante   "
+"Sudah terbiasa terjadi tante "
+"Teman datang ketika lagi butuh saja "
+"Coba kalo lagi susah "
+"Mereka semua menghilang   ";
+
+int posisi = 0;
+
+void setup() {
+  Timer1.initialize(1000);
+  Timer1.attachInterrupt(ScanDMD);
+
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+}
+
+void loop() {
+  dmd.drawMarquee(teks, strlen(teks), (32 * DISPLAYS_ACROSS) - posisi, 0);
+  long start = millis();
+
+  while (millis() - start < 30) {
+    if (dmd.stepMarquee(-1, 0)) {
+      posisi = 0;
+      break;
+    }
+  }
+  posisi++;
+}
