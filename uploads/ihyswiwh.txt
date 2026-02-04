@@ -1,0 +1,68 @@
+#include <SPI.h>       
+#include <DMD.h>    
+#include <TimerOne.h>  
+#include "SystemFont5x7.h"
+
+#define DISPLAYS_ACROSS 1 
+#define DISPLAYS_DOWN 1
+DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
+
+void ScanDMD() { 
+  dmd.scanDisplayBySPI();
+}
+
+// FUNGSI KHUSUS RUNNING TEXT PER KALIMAT
+void jalan(char *pesan, int speed) {
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+  
+  // Mulai dari koordinat X=32 (ujung kanan panel)
+  dmd.drawMarquee(pesan, strlen(pesan), 32, 4); 
+
+  long timer = millis();
+  boolean selesai = false;
+  
+  while (!selesai) {
+    if ((millis() - timer) > speed) {
+      selesai = dmd.stepMarquee(-1, 0); // Geser 1 pixel ke kiri
+      timer = millis();
+    }
+  }
+}
+
+void setup(void) {
+  Timer1.initialize(1000);          
+  Timer1.attachInterrupt(ScanDMD);   
+  dmd.clearScreen(true);   
+}
+
+void loop(void) {
+  // ATURAN: jalan("TEKS HURUF BESAR", KECEPATAN);
+  // Makin kecil angka kecepatan, makin ngebut jalannya.
+  
+  jalan("TEMANKU SEMUA PADA JAHAT TANTE", 35);
+  delay(500); // Jeda antar lirik biar gak kaget
+  
+  jalan("AKU LAGI SUSAH MEREKA GAK ADA", 35);
+  delay(500);
+  
+  jalan("COBA KALO LAGI JAYA", 35);
+  delay(500);
+  
+  jalan("AKU DIPUJA PUJANYA TANTE", 35);
+  delay(800);
+  
+  jalan("SUDAH TERBIASA TERJADI TANTE", 35);
+  delay(500);
+  
+  jalan("TEMAN DATANG KETIKA LAGI BUTUH SAJA", 35);
+  delay(500);
+  
+  jalan("COBA KALO LAGI SUSAH", 35);
+  delay(500);
+  
+  jalan("MEREKA SEMUA MENGHILANG", 35);
+  
+  dmd.clearScreen(true);
+  delay(2000); // Jeda sebelum lagu ulang dari awal
+}
