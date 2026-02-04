@@ -1,0 +1,55 @@
+#include <SPI.h>       
+#include <DMD.h>    
+#include <TimerOne.h>  
+#include "SystemFont5x7.h"
+
+#define DISPLAYS_ACROSS 1 
+#define DISPLAYS_DOWN 1
+DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
+
+void ScanDMD() { 
+  dmd.scanDisplayBySPI();
+}
+
+// Fungsi lirik dengan HURUF BESAR
+void lirik(char *atas, char *bawah, int jeda) {
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+  
+  // Koordinat Y tetap 0 dan 9 agar pas di panel 16 pixel
+  dmd.drawString(0, 0, atas, strlen(atas), GRAPHICS_NORMAL);
+  dmd.drawString(0, 9, bawah, strlen(bawah), GRAPHICS_NORMAL);
+  
+  delay(jeda); 
+}
+
+void setup(void) {
+  Timer1.initialize(1000);          
+  Timer1.attachInterrupt(ScanDMD);   
+  dmd.clearScreen(true);   
+}
+
+void loop(void) {
+  // Semua teks sudah diganti jadi HURUF BESAR
+  
+  lirik("TEMANKU", "PADA JAHAT", 2500);
+  lirik("SEMUA", "TANTE...", 2000);
+  
+  lirik("AKU LAGI", "SUSAH", 2000);
+  lirik("MEREKA", "GAK ADA", 2500);
+  
+  lirik("COBA KALO", "LAGI JAYA", 2500);
+  lirik("AKU DIPUJA", "PUJANYA", 2500);
+  
+  lirik("SUDAH", "TERBIASA", 2000);
+  lirik("TERJADI", "TANTE...", 2000);
+  
+  lirik("TEMAN", "DATANG", 2000);
+  lirik("LAGI", "BUTUH AJA", 2500);
+  
+  lirik("COBA KALO", "LAGI SUSAH", 2500);
+  lirik("MEREKA", "MENGHILANG", 3000);
+
+  dmd.clearScreen(true);
+  delay(1000); 
+}
