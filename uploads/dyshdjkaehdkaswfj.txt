@@ -1,0 +1,61 @@
+#include <SPI.h>
+#include <DMD.h>
+#include <TimerOne.h>
+#include "SystemFont5x7.h"
+
+#define DISPLAYS_ACROSS 1
+#define DISPLAYS_DOWN 1
+
+DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
+
+void ScanDMD() {
+  dmd.scanDisplayBySPI();
+}
+
+// 2 bagian lirik
+char part1[] = "TEMANKU SEMUA PADA JAHAT TANTE "
+               "AKU LAGI SUSAH MEREKA GAK ADA   ";
+
+char part2[] = "COBA KALO LAGI JAYA "
+               "AKU DIPUJA PUJANYA TANTE "
+               "SUDAH TERBIASA TERJADI TANTE   ";
+
+// efek tebal = gambar dua kali dengan offset kecil
+void drawBoldMarquee(char *txt, int delayMs) {
+  static int pos = 0;
+  int width = 32 * DISPLAYS_ACROSS;
+
+  // Gambar dua kali untuk efek tebal
+  dmd.drawMarquee(txt, strlen(txt), width - pos, 0);
+  dmd.drawMarquee(txt, strlen(txt), width - pos - 1, 0);
+
+  long start = millis();
+  while (millis() - start < delayMs) {
+    if (dmd.stepMarquee(-1, 0)) {
+      pos = 0;
+      break;
+    }
+  }
+  pos++;
+}
+
+void setup() {
+  Timer1.initialize(1000);
+  Timer1.attachInterrupt(ScanDMD);
+
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+}
+
+void loop() {
+  // tempo running ~130 BPM
+  const int scrollDelay = 115;
+
+  // Tampilkan bagian 1 dulu
+  drawBoldMarquee(part1, scrollDelay);
+
+  // Setelah selesai 1x scroll, tampilkan bagian 2
+  drawBoldMarquee(part2, scrollDelay);
+
+  // Kembali lagi ke bagian 1
+}
