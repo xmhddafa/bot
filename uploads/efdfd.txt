@@ -1,0 +1,53 @@
+#include <SPI.h>
+#include <DMD.h>
+#include <TimerOne.h>
+#include <SoftwareSerial.h>
+#include "SystemFont5x7.h"
+
+// Set Bluetooth di Pin 2 dan 3
+SoftwareSerial BT(2, 3); 
+
+DMD dmd(1, 1);
+char pesan[100] = "SIAP TERIMA DATA"; // Pesan awal
+int i = 0;
+
+void ScanDMD() {
+  dmd.scanDisplayBySPI();
+}
+
+void setup() {
+  BT.begin(9600); // Kecepatan Bluetooth
+  
+  Timer1.initialize(1000);
+  Timer1.attachInterrupt(ScanDMD);
+  dmd.clearScreen(true);
+  dmd.selectFont(SystemFont5x7);
+}
+
+void loop() {
+  // Cek kalau ada kiriman teks dari HP/Bluetooth
+  while (BT.available() > 0) {
+    char c = BT.read();
+    if (c == '\n' || c == '\r') {
+      pesan[i] = '\0'; // Akhiri pesan
+      i = 0;
+    } else {
+      if (i < 99) {
+        pesan[i] = c;
+        i++;
+      }
+    }
+  }
+
+  // Tampilkan teks berjalan
+  dmd.drawMarquee(pesan, strlen(pesan), 32, 0);
+  
+  boolean jalan = false;
+  while (!jalan) {
+    jalan = dmd.stepMarquee(-1, 0); // Geser ke kiri
+    delay(35); // Kecepatan jalan teks
+    
+    // Interupsi biar kalau lagi jalan bisa langsung ganti teks
+    if (BT.available()) break; 
+  }
+}
