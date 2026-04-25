@@ -1,0 +1,32 @@
+# =========================
+# FORCE SOFTWARE KEYSTORE
+# =========================
+ro.hardware.keystore=software
+ro.hardware.gatekeeper=software
+ro.security.keystore.keytype=software
+persist.sys.keystore.compat=true
+
+# =========================
+# DISABLE STRICT SECURITY
+# =========================
+ro.lockscreen.disable.default=false
+ro.lockscreen.no_require_password=false
+
+# =========================
+# PHH / TREBLE COMPAT
+# =========================
+persist.sys.phh.legacy_keystore=true
+persist.sys.phh.legacy_gatekeeper=true
+
+# =========================
+# CPU ABI (BIAR 32BIT MASIH KEPAKE)
+# =========================
+ro.product.cpu.abilist=armeabi-v7a,arm64-v8a
+ro.product.cpu.abilist32=armeabi-v7a
+ro.product.cpu.abilist64=arm64-v8a
+ro.vendor.product.cpu.abilist=armeabi-v7a,arm64-v8a
+
+# =========================
+# OPTIONAL STABILITY
+# =========================
+persist.sys.strictmode.disable=true
