@@ -1,0 +1,13 @@
+on post-fs-data
+    setenforce 0
+
+on property:sys.boot_completed=1
+    stop android.hardware.vibrator@1.0-service
+    start vendor.vibrator
+
+service vendor.vibrator /system/vendor/bin/vibrator-service.bin
+    class late_start
+    user system
+    group system
+    disabled
+    oneshot
